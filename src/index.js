@@ -1,12 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+// ./src/index.js
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+import React from 'react';
+import { render } from 'react-dom';  // react-dom에서 render 함수 가져오기
+import App from 'components/App';
+
+render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root"),
 );
 
 
