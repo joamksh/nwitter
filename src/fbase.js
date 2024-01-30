@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; // 수정된 부분: auth 모듈을 가져오는 방식 변경
-
+import { initializeApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY || "",
@@ -13,7 +12,6 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+const authService = getAuth(firebaseApp);
 
-// 수정된 부분: getAuth 메서드를 사용하여 auth 서비스를 가져옴
-export const authService = getAuth(firebaseApp);
-
+export { authService, createUserWithEmailAndPassword, signInWithEmailAndPassword };

@@ -1,14 +1,5 @@
-// ./src/index.js
+import { createRoot } from 'react-dom/client';
+import App from './components/App';  // 경로 수정
 
-import React from 'react';
-import { render } from 'react-dom';  // react-dom에서 render 함수 가져오기
-import App from 'components/App';
-
-render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root"),
-);
-
-
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
