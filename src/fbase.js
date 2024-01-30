@@ -1,6 +1,7 @@
 // fbase.js
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY || "",
@@ -13,5 +14,6 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const authService = getAuth(firebaseApp);
+const dbService = getFirestore();
 
-export { authService, createUserWithEmailAndPassword, signInWithEmailAndPassword, firebaseApp };
+export { authService, createUserWithEmailAndPassword, signInWithEmailAndPassword, firebaseApp, dbService };
