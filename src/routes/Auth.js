@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, authService } from "../fbase";
+import { authService } from "../fbase";
 import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 
 const Auth = () => {
@@ -23,10 +23,10 @@ const Auth = () => {
       let data;
       if (newAccount) {
         // create newAccount
-        data = await createUserWithEmailAndPassword(authService, email, password);
+        data = await authService.createUserWithEmailAndPassword(email, password);
       } else {
         // log in
-        data = await signInWithEmailAndPassword(authService, email, password);
+        data = await authService.signInWithEmailAndPassword(email, password);
       }
       console.log(data);
     } catch (error) {
