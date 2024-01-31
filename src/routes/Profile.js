@@ -4,7 +4,7 @@ import { authService, dbService } from "../fbase";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
 
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj ,refreshUser}) => {
     const navigate = useNavigate();
     const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
 
@@ -40,6 +40,7 @@ const Profile = ({ userObj }) => {
             try {
                 // 사용자 프로필 업데이트
                 await updateProfile(currentUser, { displayName: newDisplayName });
+                refreshUser();
 
                 // 업데이트된 사용자 정보 다시 가져오기
                 const updatedUser = getAuth().currentUser;
