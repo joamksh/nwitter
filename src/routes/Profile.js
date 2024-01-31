@@ -4,7 +4,7 @@ import { authService, dbService } from "../fbase";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, updateProfile } from 'firebase/auth';
 
-const Profile = ({ userObj ,refreshUser}) => {
+const Profile = ({ userObj, refreshUser }) => {
     const navigate = useNavigate();
     const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
 
