@@ -1,8 +1,10 @@
 // Home.js
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { useEffect, useState } from "react";
 import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import Nweet from "components/Nweet";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = ({ userObj }) => {
     const [nweet, setNweet] = useState("");
@@ -18,7 +20,6 @@ const Home = ({ userObj }) => {
                     ...doc.data(),
                 }));
                 setNweets(nweetArray);
-                console.log(nweetArray);
             } catch (error) {
                 console.error("Error getting documents:", error);
             }
@@ -29,41 +30,58 @@ const Home = ({ userObj }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-
         try {
-            const nweetsCollection = collection(dbService, "nweets");
-            await addDoc(nweetsCollection, {
-                text: nweet,
-                createdAt: Date.now(),
-                creatorId: userObj.uid,
-            });
+            if (attachment !== "") {
+                const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+                const nweetsCollection = collection(dbService, "nweets");
+                
+                // Upload the attachment to Storage
+                await uploadString(attachmentRef, attachment, "data_url");
+    
+                // Get the download URL using getDownloadURL method
+                const downloadURL = await getDownloadURL(attachmentRef);
+    
+                // Store data in Firestore
+                await addDoc(nweetsCollection, {
+                    text: nweet,
+                    createdAt: Date.now(),
+                    creatorId: userObj.uid,
+                    attachmentUrl: downloadURL,
+                });
+            } else {
+                // If there's no attachment, only store text in Firestore
+                const nweetsCollection = collection(dbService, "nweets");
+                await addDoc(nweetsCollection, {
+                    text: nweet,
+                    createdAt: Date.now(),
+                    creatorId: userObj.uid,
+                });
+            }
+    
+            // Clear form
             setNweet("");
+            setAttachment("");
         } catch (error) {
-            console.error("Error adding document:", error);
+            console.error("문서 추가 중 오류 발생:", error);
         }
     };
-
+    
     const onChange = (event) => {
-        const {
-            target: { value },
-        } = event;
+        const { target: { value } } = event;
         setNweet(value);
     };
 
     const onFileChange = (event) => {
-        const {
-            target: { files },
-        } = event;
+        const { target: { files } } = event;
         const theFile = files[0];
         const reader = new FileReader();
         reader.onloadend = (finishedEvent) => {
-            const {
-                currentTarget: { result },
-            } = finishedEvent;
+            const { currentTarget: { result } } = finishedEvent;
             setAttachment(result);
         };
         reader.readAsDataURL(theFile);
     };
+
     const onClearAttachment = () => setAttachment("");
 
     return (
@@ -80,7 +98,7 @@ const Home = ({ userObj }) => {
                 <input type="submit" value="Nweet" />
                 {attachment && (
                     <div>
-                        <img src={attachment} width="50px" height="50px" />
+                        <img src={attachment} width="50px" height="50px" alt="Attachment Preview" />
                         <button onClick={onClearAttachment}>Clear</button>
                     </div>
                 )}
